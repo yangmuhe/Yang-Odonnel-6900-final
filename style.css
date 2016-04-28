@@ -12,13 +12,17 @@ html,body{
 }
 
 .intro_text > h1{
-    padding-top: 10px;
+    padding-top: 20px;
 }
 
 .intro_text > *{
     width: 100%;
     position: relative;
     float: left;
+}
+
+.intro_text > h2 {
+    margin-bottom: 20px;
 }
 
 /*-------------------Map---------------*/
