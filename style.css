@@ -5,17 +5,18 @@ html,body{
 
 /*-------------------Title---------------*/
 .intro_text{
-    width: 50%;
+    width: 100%;
     position: relative;
     float:left;
     margin: 0 0 15px 0;
 }
 
 .intro_text > h1{
-    padding-top: 5px;
+    padding-top: 10px;
 }
 
 .intro_text > *{
+    width: 100%;
     position: relative;
     float: left;
 }
