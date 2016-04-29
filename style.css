@@ -8,7 +8,7 @@ html,body{
     width: 50%;
     position: relative;
     float:left;
-    margin: 0 0 15px 0;
+    margin: 10px 0 15px 0;
 }
 
 .intro_text > h1{
@@ -23,9 +23,10 @@ html,body{
 /*-------------------Map---------------*/
 #plot{
     width: 65%;
-    height: 700px;
+    height: 600px;
     position: relative;
     float:left;
+    margin-top: 5px;
 }
 
 .overlay {
@@ -35,15 +36,15 @@ html,body{
 
 .neighborhoods {
     stroke: #fff;
-    fill: rgb(210,210,210);
+    fill: rgb(225,225,225);
     stroke-linejoin: 'round';
-    stroke-width: .5;
+    stroke-width: .8;
 }
 
 .station_dot {
-    background-color: blue;
-    stroke: darkblue;
-    stroke-width: .7;
+    fill: rgb(80,80,80);
+    stroke: none;
+    opacity: .8;
 }
 
 /*.neighborhoods{*/
@@ -58,8 +59,17 @@ html,body{
     position:relative;
 }
 
+.intro{
+    float:left;
+    width: 85%;
+    margin-top: 20px;
+    margin-left: 10px;
+    position:relative;
+}
+
 .author{
-    margin-top: 10%;
+    margin-top: 8.5%;
+    margin-right: 8%;
     width: 20%;
     float: right;
 }
@@ -80,7 +90,7 @@ html,body{
     margin: 10px 0 0;
 }
     .plot .bar{
-        fill: rgb(200,200,200);
+        fill: #F2B885;
     }
 
 
@@ -92,22 +102,20 @@ html,body{
     stroke-width: 0.8;
     opacity: 0.9;
 }
-.axis text{
+.axis .tick text{
     font-size: 10px;
-    color: rgb(200,200,200);
+    color: rgb(220,220,220);
 }
 
 .label .label-y text{
     stroke: none;
     font-size: 11px;
     font-weight: 100;
-    color: red;
 }
 
 .value .value-x text{
     stroke: none;
     font-size: 10px;
-    color: red;
 }
 
 /*--------------drop-down + button--------------*/
@@ -124,36 +132,52 @@ html,body{
 .btn-group .station{
     float:left;
     font-size: 12px;
+    font-weight: 500;
+    color: rgb(100,100,100);
+    font-family: 'Open Sans', sans-serif;
     margin-right: 3px;
 }
 
 .btn-group .time{
     float:left;
     font-size: 12px;
+    font-weight: 500;
+    color: rgb(100,100,100);
+    font-family: 'Open Sans', sans-serif;
     margin-right: 3px;
 }
 
 /*--------------font--------------*/
 h1{
-    font-size: 26px;
+    font-size: 25px;
+    font-weight: 300;
+    color: rgb(100,100,100);
+    font-family: 'Open Sans', sans-serif;
     margin-left: 10%;
     margin-bottom: 0;
 }
 
 h2{
-    font-size:18px;
+    font-size:16px;
+    font-weight: 300;
+    color: #F27138;
+    font-family: 'Open Sans', sans-serif;
     margin-left: 10%;
-    margin-top: 1%;
+    margin-top: 1.5%;
 }
 
 h3{
     font-size: 10px;
-    line-height: 150%;
+    font-weight: 300;
     color: rgb(150,150,150);
     font-family: 'Open Sans', sans-serif;
+    line-height: 150%;
     margin-top: 0;
 }
 
 p{
-    font-size: 10px;
+    font-size: 11px;
+    font-weight: 300;
+    color: rgb(120,120,120);
+    font-family: 'Open Sans', sans-serif;
 }

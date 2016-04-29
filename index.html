@@ -5,12 +5,10 @@
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://d3js.org/d3-queue.v2.min.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
-    <script src="../lib/crossfilter/crossfilter.js"></script>
-  
-    <!--<script src="data/boston_regions_zip_codes_rdw.json"></script>-->
-    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="style.css"/>
-    <!--<link rel="stylesheet" href="css/map.css"/>-->
 
 
 </head>
@@ -20,11 +18,6 @@
             <h1>HUBWAY BIKE SHARING NETWORK</h1>
             <h2>Directionality and Frequency of Trips</h2>
         </div>
-
-        <!--<div class="titles">-->
-          <!--<h4>Select Station on the Map</h4>-->
-          <!--<h4>Select Trips to Analyze</h4>-->
-        <!--</div>-->
     		
         <div id="plot"> </div>
         <div id="right">
@@ -48,19 +41,21 @@
                     <a href="#" class="btn btn-default time" id="evening">Evening</a>
                 </div>
             </div>
-
-
+            <div class="intro">
+                <p>Choose a station on map or by drop-down menu, showing the most popular direction from/to the station and the number of trips accordingly.</p>
+            </div>
         </div>
+
         <div class="author">
-            <h3>Patrick J. O'Donnel and Muhe Yang<br>Information Design and Visualization<br>NEU 2016 Spring</h3>
+            <h3>Patrick J. O'Donnel and Muhe Yang || NEU 2016 Spring</h3>
         </div>
 
 
         <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
         <script src="https://d3js.org/d3-queue.v2.min.js"></script>
         <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-        <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="../lib/crossfilter/crossfilter.js"></script>
+        <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="./lib/crossfilter/crossfilter.js"></script>
 
         <!--<script src="scripts/map.js"></script>-->
         <script src="stationChart.js"></script>

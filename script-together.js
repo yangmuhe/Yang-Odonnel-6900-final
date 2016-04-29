@@ -16,8 +16,7 @@ var stationChart = d3.StationChart()
     .margin([15,0,10,10])
     //.barWidth(20)
 
-var plot = d3.select('.plot').datum([]).call(stationChart),
-    plot2 = d3.select('#plot').datum([])//.call(draw_triangles);
+var plot = d3.select('.plot').datum([]).call(stationChart);
 
 
 //time span
@@ -25,11 +24,8 @@ var morning = [new Date(0,0,0,6,0), new Date(0,0,0,12,0)],
     afternoon = [new Date(0,0,0,12,0), new Date(0,0,0,19,0)],
     evening = [new Date(0,0,0,19,0), new Date(0,0,0,24,0)];
 
-//d3.map
-//var stationNameID;
 
-
-//Draw charts
+//Draw charts by module
 dispatcherStation.on('getarray',function(array, stations, longlat, s){
 
     plot.datum(array)
@@ -50,17 +46,7 @@ var width = d3.select('#plot').node().clientWidth,
     switch_a = false,
     rad =2;
 
-var selected_station,
-    trips_from,
-    trips_to;
-
-var from_or_two,
-    time_of_day,
-    long_or_short;
-
 var tri = [{"x":-rad/3, "y":-5*rad/2}, {"x":rad/3,"y":-5*rad/2}, {"x":0,"y":-7*rad/2}];
-
-
 
 //SVG FOR MAP
 var svg = d3.select( "#plot" )
@@ -79,9 +65,9 @@ var g = svg.append( "g" );
 
 //PROJECTION
 var albersProjection = d3.geo.albers()
-    .scale( 260000 )
+    .scale( 310000 )
     .rotate( [71.087,0] )
-    .center( [0, 42.33] )
+    .center( [0, 42.3575] )
     .translate( [width/2,height/2] );
 
 //DRAWING THE PATHS OF geoJSON OBJECTS
@@ -89,86 +75,6 @@ var geoPath = d3.geo.path()
     .projection( albersProjection );
 
 //END PATRICK'S GLOBAL VARIABLES
-
-
-//global draw_triangle function
-//var longlat;
-//PLOT TRIANGLES AROUND STATION DOT
-function draw_triangles(array, stations, longlat, start_boolean) {
-    //console.log(array);
-    //console.log(longlat);
-    //console.log(stations);
-
-    g.selectAll('polygon').remove();
-
-    var stationNameID = d3.map(stations, function(d){return d.id;});
-    //var start_boolean = true;
-    //console.log(stationNameID.get(3).fullName); //!!
-    //console.log(stationNameID.get(3).lngLat);
-
-    //var z = Math.floor(Math.random() * (stations.length-1));
-    var station = albersProjection(longlat); //"stations" is object
-    //console.log("dest: "+dest);
-
-
-    
-    g.selectAll('polygon')
-        .data( array )  
-        .enter()
-        .append('polygon')
-        .attr("points", function (d) {
-            return tri.map(function (e) {
-                return [(e.x), (e.y)].join(",");
-            })
-                .join(" ");
-        })
-        .attr('transform', function (d) {
-            var where = stationNameID.get(d.key).lngLat
-            var xy = albersProjection(where);
-            var slope1 = (station[0] - xy[0]) / (xy[1] - station[1]) // station = albersprojection[lng, lat]
-            //var atan = Math.atan( (slope) )
-
-            var quad_shift, angle;
-            if (station[0] < xy[0] && station[1] < xy[1]) {
-                angle = Math.atan(slope1);
-                quad_shift = angle;
-                //console.log(angle*180/Math.PI+' is angle in quad 2');
-            }
-            else if (station[0] > xy[0] && station[1] < xy[1]) {
-                angle = Math.atan((slope1));
-                quad_shift = angle;
-                //console.log(angle*180/Math.PI+' is angle in quad 3');
-            }
-            else if (station[0] < xy[0] && station[1] > xy[1]) {
-                angle = Math.atan((slope1));
-                quad_shift = Math.PI + angle;
-                //console.log(angle*180/Math.PI+' is angle in quad 1');
-            }
-            else if (station[0] > xy[0] && station[1] > xy[1]) {
-                angle = Math.atan((xy[1] - station[1]) / (station[0] - xy[0]));
-                quad_shift = (Math.PI / 2) + (Math.PI - angle) + Math.PI;
-                //console.log(angle*180/Math.PI+' is angle in quad 4');
-            }
-            else {
-                console.log('didnt work');
-            }
-            var degrees = quad_shift * 180 / (Math.PI)
-
-            //console.log(d.id+', '+slope+', '+atan+', '+rot_ex()+', '+degr);
-            if (start_boolean==false) {
-                console.log('ending at')
-                return 'translate(' + xy[0] + ', ' + xy[1] + ') rotate (' + degrees + ')'
-            } else if (start_boolean==true) {
-                console.log('starting at')
-                return 'translate(' + station[0] + ', ' + station[1] + ') rotate (' + degrees + ')'
-            } else { console.log('return didnt happen') }
-        })
-        .attr("stroke", "#FFFF66")
-        .attr("stroke-width", rad / 2);
-
-
-} //end draw triangles
-
 
 
 
@@ -183,14 +89,12 @@ d3_queue.queue()
 
 
 function dataLoaded(err, rows, stations, bos, cam, som, bro){
-
-    //console.log(stations);
+        
 
     //Look-up table of station ID and name
     var stationNameID = d3.map(stations, function(d){return d.id;});
     //console.log(stationNameID.get(3).fullName); //!!
     //console.log(stationNameID.get(3).lngLat);
-
 
 
     //pass on data for labels
@@ -205,6 +109,46 @@ function dataLoaded(err, rows, stations, bos, cam, som, bro){
     var cfEnd = crossfilter(rows);
     var tripsByEnd1 = cfEnd.dimension(function(d){return d.endStation;}),
         tripsByTimeEnd = cfEnd.dimension(function(d){return d.startTimeT;});
+
+
+    //Connect map with chart
+    dispatcherStation.on('getstationid', function(id){
+        console.log(id);
+
+        selectStation(id);
+
+        buttonClick(id);
+
+    });
+
+
+    //drop-down menu: choose station
+    d3.select('.station').on('change',function(){
+        console.log(this);
+        var stationID = this.value;
+
+        if(stationID!=""){
+            d3.selectAll('.station_dot')
+                .transition()
+                .style('opacity',function(d){
+                    if(d.id == stationID){
+                        return '1';
+                    }
+                    else{
+                        return '0.4'
+                    }
+                });
+        } else{ // if select the first option, show all dots
+            d3.selectAll('.station_dot')
+                .transition()
+                .style('opacity','1');
+        }
+
+        selectStation(stationID);
+
+        buttonClick(stationID);
+
+    });
 
 
     /*-----------------------------functions (by Muhe)------------------------------*/
@@ -339,35 +283,6 @@ function dataLoaded(err, rows, stations, bos, cam, som, bro){
     /*-----------------------------functions end------------------------------*/
 
 
-    //Connect map with chart
-    dispatcherStation.on('getstationid', function(id){
-        console.log(id);
-
-        selectStation(id);
-
-        buttonClick(id);
-
-    });
-
-
-    //drop-down menu: choose station
-    d3.select('.station').on('change',function(){
-        console.log(this);
-        var stationID = this.value;
-        
-
-        d3.selectAll('.station_dot').style('fill', 'rgb(32,96,255)');
-        //d3.select('[station_num='+stationID+']').style('fill', 'orange');
-        d3.select('.station_dot').select('[station_num='+stationID+']').style('fill', 'orange');
-
-        selectStation(stationID);
-
-        buttonClick(stationID);
-
-
-    });
-
-
 
     //PATRICK'S JS
     //APPEND NEIGHBORHOODS ON MAP
@@ -416,7 +331,7 @@ function dataLoaded(err, rows, stations, bos, cam, som, bro){
         .enter()
         .append('circle')
         .attr('class', 'station_dot')
-        .attr('station_num', function(d) { return d.id })
+        //.attr('station_num', function(d) { return d.id })
         .attr('id', function(d) { return d.fullName })
         .attr('cx', function(d) {
             var xy = albersProjection(d.lngLat);
@@ -425,32 +340,29 @@ function dataLoaded(err, rows, stations, bos, cam, som, bro){
             var xy = albersProjection(d.lngLat);
             return xy[1]; })
         .attr('r', rad)
-        .style('fill', 'rgb(32,96,255)')
-        .style('stroke-width', 0)
-        .style('opacity',.9)
         .on('click', set_station_num)
-
-
-
 
     //END OF STATIONS ON MAP
 
     svg.append('rect')
-        .attr('x', 300)
-        .attr('y', 662)
+        .attr('x', 460)
+        .attr('y', 570)
+        .attr('class','substitle')
         .attr('height', 30)
         .attr('width', 400)
         .style('fill', "#ffffff")
         .style('opacity', .75)
-
+            
     svg.append('text')
-        .text('Boston, Brookline, Cambridge, Sommerville')
+        .attr('x', 470)
+        .attr('y', 591)
+        .text('Boston, Brookline, Cambridge, Somerville')
         .attr("font-family", "serif")
-        .attr("font-size", "20px")
-        .attr("fill", "black")
-        .attr("font-weight", "bold")
-        .attr('x', 310)
-        .attr('y', 682);
+        .attr("font-size", "18px")
+        .attr('font-style', 'oblique')
+        .attr("fill", "rgb(50,50,50)")
+        .attr('class','substitle');
+
 
 
 } //end of dataLoaded
@@ -459,10 +371,76 @@ function dataLoaded(err, rows, stations, bos, cam, som, bro){
 /*-----------------------------functions------------------------------*/
 
 
-
-
 //PATRICK'S FUNCTIONS
-//
+//global draw_triangle function
+//PLOT TRIANGLES AROUND STATION DOT
+function draw_triangles(array, stations, longlat, start_boolean) {
+
+    g.selectAll('polygon').remove();
+
+    var stationNameID = d3.map(stations, function(d){return d.id;});
+
+    //var z = Math.floor(Math.random() * (stations.length-1));
+    var station = albersProjection(longlat); //"stations" is object
+    
+
+    g.selectAll('polygon')
+        .data( array )
+        .enter()
+        .append('polygon')
+        .attr("points", function (d) {
+            return tri.map(function (e) {
+                return [(e.x), (e.y)].join(",");
+            })
+                .join(" ");
+        })
+        .attr('transform', function (d) {
+            var where = stationNameID.get(d.key).lngLat
+            var xy = albersProjection(where);
+            var slope1 = (station[0] - xy[0]) / (xy[1] - station[1]) // station = albersprojection[lng, lat]
+            //var atan = Math.atan( (slope) )
+
+            var quad_shift, angle;
+            if (station[0] < xy[0] && station[1] < xy[1]) {
+                angle = Math.atan(slope1);
+                quad_shift = angle;
+                //console.log(angle*180/Math.PI+' is angle in quad 2');
+            }
+            else if (station[0] > xy[0] && station[1] < xy[1]) {
+                angle = Math.atan((slope1));
+                quad_shift = angle;
+                //console.log(angle*180/Math.PI+' is angle in quad 3');
+            }
+            else if (station[0] < xy[0] && station[1] > xy[1]) {
+                angle = Math.atan((slope1));
+                quad_shift = Math.PI + angle;
+                //console.log(angle*180/Math.PI+' is angle in quad 1');
+            }
+            else if (station[0] > xy[0] && station[1] > xy[1]) {
+                angle = Math.atan((xy[1] - station[1]) / (station[0] - xy[0]));
+                quad_shift = (Math.PI / 2) + (Math.PI - angle) + Math.PI;
+                //console.log(angle*180/Math.PI+' is angle in quad 4');
+            }
+            else {
+                console.log('didnt work');
+            }
+            var degrees = quad_shift * 180 / (Math.PI)
+
+            //console.log(d.id+', '+slope+', '+atan+', '+rot_ex()+', '+degr);
+            if (start_boolean==false) {
+                console.log('ending at')
+                return 'translate(' + xy[0] + ', ' + xy[1] + ') rotate (' + degrees + ')'
+            } else if (start_boolean==true) {
+                console.log('starting at')
+                return 'translate(' + station[0] + ', ' + station[1] + ') rotate (' + degrees + ')'
+            } else { console.log('return didnt happen') }
+        })
+        .attr("stroke", "#F16521")
+        .attr("stroke-width", rad / 2);
+
+
+} //end draw triangles
+
 // CLICK TO GET INFO ON STATION
 // now assign this console log to a global variable
 //
@@ -476,14 +454,11 @@ function set_station_num (d) {
 
     dispatcherStation.getstationid(stationid);
 
-    //highlight map dot
     //highlight station dot
-    d3.selectAll('.station_dot').style('fill', 'rgb(32,96,255)');
-    d3.select(this).style('fill', 'orange');
-
+    d3.selectAll('.station_dot').style('fill', 'rgb(80,80,80)').style('opacity',.4);
+    d3.select(this).style('fill', 'rgb(80,80,80)').style('opacity',1);
 
 }
-
 
 
 //
@@ -575,10 +550,11 @@ function parseTime(t){
 }
 
 function parseStations(s){
+
     d3.select('.station')
-        .append('option')
-        .html(s.station)
-        .attr('value', s.id);
+            .append('option')
+            .html(s.station)
+            .attr('value', +s.id);
 
     return {
         id: s.id,

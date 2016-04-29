@@ -13,8 +13,7 @@ d3.StationChart = function(){
         padding,
         scaleY = d3.scale.ordinal(),
         scaleX = d3.scale.linear(),
-        axisX = d3.svg.axis().orient('top').ticks(3),
-        valueAccessor = function(d){return d;};
+        axisX = d3.svg.axis().orient('top').ticks(3);
 
     var exports = function (_selection) {
         //recalculate width, height, scales, layout if updated
